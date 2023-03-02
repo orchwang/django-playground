@@ -1,0 +1,8 @@
+pip-tools
+ipython
+django-extensions
+black
+flake8
+isort
+codespell
+neovim

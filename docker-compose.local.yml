@@ -1,0 +1,38 @@
+version: '3'
+services:
+  playground:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.local
+    image: playground-api-image
+    container_name: playground-api
+    volumes:
+      - ./:/app
+    environment:
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - 3031:3031
+    entrypoint:
+      - /entrypoint.local.sh
+    links:
+      - mysql
+    networks:
+      - playground-net
+  mysql:
+    image: "mysql:${MYSQL_VERSION}"
+    container_name: playground-mysql
+    restart: 'always'
+    command: --init-file /data/application/init.sql
+    volumes:
+      - ${MYSQL_DIR}:/var/lib/mysql
+      - ./init.sql:/data/application/init.sql
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - 6406:3306
+    networks:
+      - playground-net
+networks:
+  playground-net:

@@ -1,0 +1,30 @@
+# Base Image
+FROM alpine:3.17
+RUN apk add --no-cache mysql-client
+
+# Python
+FROM python:3.10.10
+ENV PYTHONUNBUFFERED 1
+
+# locale
+ENV LC_ALL=C.UTF-8
+
+# Setting up working directory
+COPY . /app
+WORKDIR /app
+
+# Setting up static, media folders (only in local)
+RUN mkdir -p /app/static \
+    && mkdir -p /app/media
+
+# Install and Upgrading pip
+RUN python -m pip install pip --upgrade \
+    && pip3 install -r requirements.txt
+RUN pip3 install -r requirements-dev.txt
+
+# Open Port for the Python App
+EXPOSE 3136
+
+# Setting Django environment with entrypoint.sh
+COPY sh/entrypoints/entrypoint.local.sh /entrypoint.local.sh
+RUN chmod +x /entrypoint.local.sh
