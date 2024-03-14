@@ -1,0 +1,63 @@
+version: "3"
+services:
+  playground-backend:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.local
+    image: ${PROJECT_NAME}-image
+    container_name: ${PROJECT_NAME}-backend
+    volumes:
+      - ./:/app
+      - ./local/geo:/geo
+    environment:
+      DB_DATABASE_NAME: ${DB_DATABASE_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - ${BACKEND_PORT}:3200
+    entrypoint:
+      - /entrypoint.local.sh
+    links:
+      - ${PROJECT_NAME}-postgres
+    networks:
+      - ${PROJECT_NAME}-net
+  playground-worker:
+    image: ${PROJECT_NAME}-image
+    container_name: ${PROJECT_NAME}-worker
+    volumes:
+      - ./:/app
+      - ./local/geo:/geo
+    environment:
+      DB_DATABASE_NAME: ${DB_DATABASE_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    entrypoint:
+      - /entrypoint-worker.local.sh
+    links:
+      - ${PROJECT_NAME}-postgres
+    networks:
+      - ${PROJECT_NAME}-net
+  playground-postgres:
+    image: "postgres:${DB_VERSION}"
+    container_name: ${PROJECT_NAME}-postgres
+    environment:
+      POSTGRES_DB: ${DB_DATABASE_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ${DB_DIR}:/var/lib/postgresql/data
+    ports:
+      - ${POSTGRES_PORT}:5432
+    networks:
+      - ${PROJECT_NAME}-net
+  playground-redis:
+    image: redis:latest
+    container_name: ${PROJECT_NAME}-redis
+    volumes:
+      - ${REDIS_DIR}:/data
+    ports:
+      - ${REDIS_PORT}:6379
+    networks:
+      - ${PROJECT_NAME}-net
+networks:
+  playground-net:

@@ -1,0 +1,35 @@
+[tool.ruff]
+line-length = 120
+extend-exclude = ['migrations']
+
+[tool.ruff.lint]
+select = ['F', 'W', 'E', 'I', 'D', 'N', 'DJ', 'ISC', 'ICN', 'G', 'INP', 'PIE', 'T20', 'Q', 'RSE', 'SIM', 'INT']
+ignore = ['W191', 'E111', 'E114', 'E117', 'D100', 'D101', 'D102', 'D103', 'D104', 'D105', 'D106', 'D107', 'D206', 'D300', 'Q000', 'Q001', 'Q002', 'Q003', 'COM812', 'COM819', 'DJ008', 'ISC001', 'ISC002']
+
+[tool.ruff.format]
+exclude = ['migrations']
+quote-style = 'single'
+preview = true
+
+[tool.ruff.pydocstyle]
+convention = 'google'
+
+[tool.poetry]
+name = "django-playground"
+version = "0.1.0"
+description = "Django playground for practice django features."
+authors = ["Orchwang <orchwang@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^5.0.3"
+psycopg = "^3.1.18"
+
+
+[tool.poetry.group.dev.dependencies]
+factory-boy = "^3.3.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
